@@ -1,6 +1,2 @@
-redis:
-  host: 127.0.0.1
-  port: 6379
-
 github:
-  post-receive-secret: derp
+  post_receive_secret: derp
