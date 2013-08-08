@@ -1,0 +1,91 @@
+
+{
+   "after":"dac728e54424f3c8758ba2788f20e22262b9ee2d",
+   "before":"18dc66c1f63cb8d64bcda87ab07755cd679e9d7c",
+   "commits":[
+      {
+         "added":[
+         ],
+         "author":{
+            "email":"chris@cthomson.ca",
+            "name":"Chris Thomson",
+            "username":"christhomson"
+         },
+         "committer":{
+            "email":"chris@cthomson.ca",
+            "name":"Chris Thomson",
+            "username":"christhomson"
+         },
+         "distinct":true,
+         "id":"dac728e54424f3c8758ba2788f20e22262b9ee2d",
+         "message":"Added warning for CS 240.",
+         "modified":[
+            "cs241.tex",
+            "cs241.pdf"
+         ],
+         "removed":[
+         ],
+         "timestamp":"2013-05-02T21:19:46-08:00",
+         "url":"https://github.com/christhomson/lecture-notes/commit/dac728e54424f3c8758ba2788f20e22262b9ee2d"
+      }
+   ],
+   "compare":"https://github.com/christhomson/lecture-notes/compare/18dc66c1f63cb8...dac728e54424f",
+   "created":false,
+   "deleted":false,
+   "forced":false,
+   "head_commit":{
+      "added":[
+      ],
+      "author":{
+         "email":"chris@cthomson.ca",
+         "name":"Chris Thomson",
+         "username":"christhomson"
+      },
+      "committer":{
+         "email":"chris@cthomson.ca",
+         "name":"Chris Thomson",
+         "username":"christhomson"
+      },
+      "distinct":true,
+      "id":"dac728e54424f3c8758ba2788f20e22262b9ee2d",
+      "message":"Added warning for CS 240.",
+      "modified":[
+         "cs241.tex",
+         "cs241.pdf"
+      ],
+      "removed":[
+      ],
+      "timestamp":"2013-05-02T21:19:46-08:00",
+      "url":"https://github.com/christhomson/lecture-notes/commit/dac728e54424f3c8758ba2788f20e22262b9ee2d"
+   },
+   "pusher":{
+      "email":"chris@cthomson.ca",
+      "name":"Chris Thomson"
+   },
+   "ref":"refs/heads/master",
+   "repository":{
+      "created_at":1332977768,
+      "description":"",
+      "fork":false,
+      "forks":8,
+      "has_downloads":true,
+      "has_issues":true,
+      "has_wiki":true,
+      "homepage":"",
+      "id":3860742,
+      "language":"",
+      "master_branch":"master",
+      "name":"lecture-notes",
+      "open_issues":2,
+      "owner":{
+         "email":"chris@cthomson.ca",
+         "name":"christhomson"
+      },
+      "private":false,
+      "pushed_at":1363295520,
+      "size":2156,
+      "stargazers":1,
+      "url":"https://github.com/christhomson/lecture-notes",
+      "watchers":1
+   }
+}

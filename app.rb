@@ -1,15 +1,11 @@
 require 'yaml'
-require './compilation_job'
+require './workers/compilation_job'
 
 class Noteface < Sinatra::Base
   before do
     @config ||= YAML.load_file('config.yml')
     @redis ||= Redis.new # assume localhost:6379
     Resque.redis = @redis
-  end
-
-  def raw_url_for(filename, repository)
-    "#{repository['url']}/raw/master/#{filename}"
   end
 
   post '/receive_push/:secret' do
@@ -27,7 +23,8 @@ class Noteface < Sinatra::Base
     files_to_compile.select! { |f| f[-4..-1] == ".tex" }
 
     for file in files_to_compile
-      Resque.enqueue CompilationJob, raw_url_for(file, payload["repository"])
+      puts "Queuing #{file}@#{payload["after"]} for compilation."
+      Resque.enqueue(CompilationJob, file, payload["head_commit"]["id"], payload["repository"])
     end
 
     201
