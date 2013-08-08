@@ -8,6 +8,21 @@ class Noteface < Sinatra::Base
     Resque.redis = @redis
   end
 
+  helpers do
+    def protected!
+      return if authorized?
+      headers['WWW-Authenticate'] = 'Basic realm="Go away"'
+      halt 401, "Sorry, you aren't authorized to view that.\n"
+    end
+
+    def authorized?
+      user = @config["auth"]["username"]
+      pass = @config["auth"]["password"]
+      @auth ||= Rack::Auth::Basic::Request.new(request.env)
+      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [user, pass]
+    end
+  end
+
   post '/receive_push/:secret' do
     halt 403 if params[:secret] != @config["github"]["post_receive_secret"]
     payload = JSON.parse request.body.read
@@ -46,5 +61,11 @@ class Noteface < Sinatra::Base
     else
       404
     end
+  end
+
+  # TODO - dashboard for viewing documents and stats
+  get '/dash' do
+    protected!
+    200
   end
 end

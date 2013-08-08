@@ -1,2 +1,6 @@
+auth:
+  username: chris
+  password: derp
+
 github:
-  post_receive_secret: derp
+  post_receive_secret: omnomnom
