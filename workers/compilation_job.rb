@@ -56,8 +56,8 @@ private
         log "compile run #2 successful"
 
         redis = Redis.new
-        redis.sadd("#{@file}:compiled_revisions", @sha)
-        redis.set("#{@file}:latest", @sha)
+        redis.sadd("#{document_name}:compiled_revisions", @sha)
+        redis.set("#{document_name}:latest", @sha)
         log :done
       else
         log :failed

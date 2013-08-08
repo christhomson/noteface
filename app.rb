@@ -29,4 +29,22 @@ class Noteface < Sinatra::Base
 
     201
   end
+
+  get '/dl/latest/:document_name.pdf' do
+    document_name = params[:document_name]
+    latest_sha = @redis.get("#{document_name}:latest")
+
+    if latest_sha
+      user_info = "#{request.ip},#{Time.now.to_i},#{request.user_agent}"
+      @redis.sadd "#{document_name}:#{latest_sha}:downloads", user_info
+
+      headers \
+        'Content-Type' => 'application/pdf',
+        'Etag' => latest_sha
+
+      File.read(File.join("./documents/#{document_name}/#{latest_sha}/#{document_name}.pdf"))
+    else
+      404
+    end
+  end
 end
