@@ -21,6 +21,21 @@ class Noteface < Sinatra::Base
       @auth ||= Rack::Auth::Basic::Request.new(request.env)
       @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [user, pass]
     end
+
+    def serve_pdf(document_name, sha)
+      if sha
+        user_info = "#{request.ip},#{Time.now.to_i},#{request.user_agent}"
+        @redis.sadd "#{document_name}:#{sha}:downloads", user_info
+
+        headers \
+          'Content-Type' => 'application/pdf',
+          'Etag' => sha
+
+        File.read(File.join("./documents/#{document_name}/#{sha}/#{document_name}.pdf"))
+      else
+        404
+      end
+    end
   end
 
   post '/receive_push/:secret' do
@@ -49,18 +64,11 @@ class Noteface < Sinatra::Base
     document_name = params[:document_name]
     latest_sha = @redis.get("#{document_name}:latest")
 
-    if latest_sha
-      user_info = "#{request.ip},#{Time.now.to_i},#{request.user_agent}"
-      @redis.sadd "#{document_name}:#{latest_sha}:downloads", user_info
+    serve_pdf params[:document_name], latest_sha
+  end
 
-      headers \
-        'Content-Type' => 'application/pdf',
-        'Etag' => latest_sha
-
-      File.read(File.join("./documents/#{document_name}/#{latest_sha}/#{document_name}.pdf"))
-    else
-      404
-    end
+  get '/dl/:sha/:document_name.pdf' do
+    serve_pdf params[:document_name], params[:sha]
   end
 
   # TODO - dashboard for viewing documents and stats
