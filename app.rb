@@ -25,7 +25,7 @@ class Noteface < Sinatra::Base
 
   post '/receive_push/:secret' do
     halt 403 if params[:secret] != @config["github"]["post_receive_secret"]
-    payload = JSON.parse request.body.read
+    payload = JSON.parse params[:payload]
     halt 304 if payload["ref"] != "refs/heads/master" # only build on master
 
     files_to_compile = []
