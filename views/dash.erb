@@ -1,8 +1,11 @@
+<% @title = "Dashboard" %>
 <ul>
 <% for document_name, document in @documents %>
   <li>
     <h2><%= document[:name] %></h2>
-    <%= document[:users].count %> unique people %>
+    <%= document[:users].count %> unique people
   </li>
+
+  <canvas id="downloads-by-document" width="400" height="400"></canvas>
 <% end %>
 </ul>

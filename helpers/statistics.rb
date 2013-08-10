@@ -33,8 +33,9 @@ module Helpers
           stats[:users][dl["ip"]][:latest_download] = time
         end
 
-        stats[:days][time.day] = stats[:days][time.day] + 1
+        stats[:days][time.to_date.to_s] = stats[:days][time.to_date.to_s] + 1
         stats[:hours][time.hour] = stats[:hours][time.hour] + 1
+
       end
 
       stats
