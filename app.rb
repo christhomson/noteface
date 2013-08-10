@@ -1,5 +1,6 @@
 require 'yaml'
 require './workers/compilation_job'
+require './helpers/authentication'
 
 class Noteface < Sinatra::Base
   before do
@@ -9,19 +10,8 @@ class Noteface < Sinatra::Base
   end
 
   helpers Sinatra::JSON
+  helpers Helpers::Authentication
   helpers do
-    def protected!
-      return if authorized?
-      headers['WWW-Authenticate'] = 'Basic realm="Go away"'
-      halt 401, "Sorry, you aren't authorized to view that.\n"
-    end
-
-    def authorized?
-      user = @config["auth"]["username"]
-      pass = @config["auth"]["password"]
-      @auth ||= Rack::Auth::Basic::Request.new(request.env)
-      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [user, pass]
-    end
 
     def serve_pdf(document_name, sha)
       if sha
