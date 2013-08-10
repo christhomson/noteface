@@ -2,10 +2,14 @@ require 'net/https'
 
 class CompilationJob
   @queue = :latex
+  @redis = Redis.new
 
-  def self.perform(file, sha, repository)
-    @file, @sha, @repository = file, sha, repository
+  def self.perform(file, commit, repository)
+    @file, @commit, @repository = file, commit, repository
+    @sha = @commit["id"]
     log :started
+
+    @redis.set("#{@sha}:timestamp", @commit["timestamp"])
 
     setup_workspace and fetch and compile
   end
@@ -55,9 +59,9 @@ private
       if $?.to_i.zero?
         log "compile run #2 successful"
 
-        redis = Redis.new
-        redis.sadd("#{document_name}:compiled_revisions", @sha)
-        redis.set("#{document_name}:latest", @sha)
+        @redis.sadd("#{document_name}:compiled_revisions", @sha)
+        @redis.set("#{document_name}:latest", @sha)
+        @redis.sadd("documents", @file)
         log :done
       else
         log :failed
