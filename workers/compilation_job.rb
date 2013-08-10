@@ -61,7 +61,7 @@ private
 
         @redis.sadd("#{document_name}:compiled_revisions", @sha)
         @redis.set("#{document_name}:latest", @sha)
-        @redis.sadd("documents", @file)
+        @redis.sadd("documents", document_name)
         log :done
       else
         log :failed

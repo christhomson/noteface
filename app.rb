@@ -1,6 +1,7 @@
 require 'yaml'
 require './workers/compilation_job'
 require './helpers/authentication'
+require './helpers/statistics'
 
 class Noteface < Sinatra::Base
   before do
@@ -11,6 +12,7 @@ class Noteface < Sinatra::Base
 
   helpers Sinatra::JSON
   helpers Helpers::Authentication
+  helpers Helpers::Statistics
   helpers do
 
     def serve_pdf(document_name, sha)
@@ -86,6 +88,18 @@ class Noteface < Sinatra::Base
     end
 
     json documents
+  end
+
+  get '/dash/stats.json' do
+    protected!
+
+    documents = @redis.smembers('documents')
+    stats = []
+    for document in documents
+      stats << stats_for(document)
+    end
+
+    json stats
   end
 
   # TODO - dashboard for viewing documents and stats
