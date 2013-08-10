@@ -39,5 +39,28 @@ module Helpers
 
       stats
     end
+
+    def all_stats
+      documents = @redis.smembers('documents')
+      stats = {
+        :documents => {},
+        :users_count => 0
+      }
+
+      users = []
+
+      for document in documents
+        stats[:documents][document] = stats_for(document)
+        users << stats[:documents][document][:users]
+      end
+
+      users.flatten!
+      users.uniq!
+
+      stats[:users_count] = users.count
+
+      stats
+    end
+
   end
 end

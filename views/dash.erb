@@ -1,0 +1,8 @@
+<ul>
+<% for document_name, document in @documents %>
+  <li>
+    <h2><%= document[:name] %></h2>
+    <%= document[:users].count %> unique people %>
+  </li>
+<% end %>
+</ul>

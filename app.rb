@@ -1,4 +1,5 @@
 require 'yaml'
+require 'erb'
 require './workers/compilation_job'
 require './helpers/authentication'
 require './helpers/statistics'
@@ -93,18 +94,17 @@ class Noteface < Sinatra::Base
   get '/dash/stats.json' do
     protected!
 
-    documents = @redis.smembers('documents')
-    stats = []
-    for document in documents
-      stats << stats_for(document)
-    end
-
-    json stats
+    json all_stats
   end
 
   # TODO - dashboard for viewing documents and stats
   get '/dash' do
     protected!
-    200
+
+    stats = all_stats
+    @documents = stats[:documents]
+    @users_count = stats[:users_count]
+
+    erb :dash
   end
 end
