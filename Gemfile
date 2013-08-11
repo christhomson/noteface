@@ -6,7 +6,10 @@ gem 'sinatra-contrib', :require => 'sinatra/json'
 gem 'redis'
 gem 'json'
 gem 'resque'
+gem 'rake'
 
 group :development do
   gem 'pry'
+  gem 'vlad', :require => false
+  gem 'vlad-git', :require => false
 end
