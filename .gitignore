@@ -1,5 +1,5 @@
 tmp
 .bundle
-config.yml
+config/*.yml
 documents
 *.log

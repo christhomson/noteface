@@ -6,7 +6,7 @@ require './helpers/statistics'
 
 class Noteface < Sinatra::Base
   before do
-    @config ||= YAML.load_file('config.yml')
+    @config ||= YAML.load_file('config/settings.yml')
     @redis ||= Redis.new # assume localhost:6379
     Resque.redis = @redis
   end
