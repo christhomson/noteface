@@ -1,4 +1,5 @@
 require 'net/https'
+require 'time'
 
 class CompilationJob
   @queue = :latex
@@ -74,7 +75,9 @@ private
   end
 
   def self.perform_compilation!
-    `cd ./documents/#{document_name}/#{@sha}/; pdflatex #{@file}`
+    time = Time.parse(@commit["timestamp"]).strftime("%B %e, %Y at %l:%M %p")
+    `cd ./documents/#{document_name}/#{@sha}/;
+    pdflatex "\\def\\sha{#{@sha[0...7]}} \\def\\commitDateTime{#{time}} \\input{#{@file}}"`
   end
 
   def self.log(message)
