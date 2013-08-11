@@ -57,7 +57,7 @@ class Noteface < Sinatra::Base
       Resque.enqueue(CompilationJob, file, payload["head_commit"], payload["repository"])
     end
 
-    201
+    202
   end
 
   get '/dl/latest/:document_name.pdf' do
