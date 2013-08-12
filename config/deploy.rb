@@ -6,23 +6,45 @@ set :user, "deploy"
 set :domain, "#{user}@noteface.cthomson.ca"
 set :deploy_to, "/home/deploy/apps/noteface"
 set :revision, "HEAD"
-set :port, 9999 # We'll redirect port 80 to this port with iptables, so we don't require sudo to reboot thin
+
+# Symlink documents directory to shared/documents so it doesn't get overwritten with each deploy.
+shared_paths.merge!({"documents" => "documents"})
+
+# On the server side, the upstart scripts (config/upstart) should be installed to /etc/init.
+# We also need to allow the "[start|stop|restart] [thin|resque]" commands with no password for this user.
 
 namespace :vlad do
   namespace :thin do
     remote_task :start, :roles => :app do
       puts "Starting Thin..."
-      run "cd #{current_release}; thin start -e production -p #{port} -d"
+      sudo "start thin"
     end
 
     remote_task :stop, :roles => :app do
       puts "Attempting to stop Thin..."
-      run "cd #{current_release}; if [ -f tmp/pids/thin.pid ]; then thin stop; fi"
+      sudo "stop thin"
     end
 
     remote_task :restart, :roles => :app do
-      Rake::Task['vlad:thin:stop'].invoke
-      Rake::Task['vlad:thin:start'].invoke
+      puts "Restarting Thin..."
+      sudo "restart thin"
+    end
+  end
+
+  namespace :resque do
+    remote_task :start, :roles => :app do
+      puts "Starting Resque worker..."
+      sudo "start resque"
+    end
+
+    remote_task :stop, :roles => :app do
+      puts "Attempting to stop Resque worker..."
+      sudo "stop resque"
+    end
+
+    remote_task :restart, :roles => :app do
+      puts "Restarting Resque worker..."
+      sudo "restart resque"
     end
   end
 
@@ -35,6 +57,7 @@ namespace :vlad do
     "vlad:symlink_config",
     "vlad:bundle:install",
     "vlad:thin:restart",
+    "vlad:resque:restart",
     "vlad:cleanup"
   ]
 end
