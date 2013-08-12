@@ -2,5 +2,8 @@ auth:
   username: chris
   password: derp
 
+latex:
+  executable: /usr/local/texlive/2013/bin/i386-linux/pdflatex
+
 github:
   post_receive_secret: omnomnom

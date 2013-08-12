@@ -1,5 +1,6 @@
 require 'net/https'
 require 'time'
+require 'yaml'
 
 class CompilationJob
   @queue = :latex
@@ -8,6 +9,7 @@ class CompilationJob
   def self.perform(file, commit, repository)
     @file, @commit, @repository = file, commit, repository
     @sha = @commit["id"]
+    @config = YAML.load_file("config/settings.yml")
     log :started
 
     @redis.set("#{@sha}:timestamp", @commit["timestamp"])
@@ -76,8 +78,9 @@ private
 
   def self.perform_compilation!
     time = Time.parse(@commit["timestamp"]).strftime("%B %e, %Y at %l:%M %p")
+
     `cd ./documents/#{document_name}/#{@sha}/;
-    pdflatex "\\def\\sha{#{@sha[0...7]}} \\def\\commitDateTime{#{time}} \\input{#{@file}}"`
+    #{@config["latex"]["executable"]} "\\def\\sha{#{@sha[0...7]}} \\def\\commitDateTime{#{time}} \\input{#{@file}}"`
   end
 
   def self.log(message)
