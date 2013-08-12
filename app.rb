@@ -88,6 +88,7 @@ class Noteface < Sinatra::Base
       end
     end
 
+    headers "Access-Control-Allow-Origin" => "*"
     json documents
   end
 
