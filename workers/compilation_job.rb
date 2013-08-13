@@ -5,6 +5,7 @@ require 'yaml'
 class CompilationJob
   @queue = :latex
   @redis = Redis.new
+  MAX_RUNS = 3
 
   def self.perform(file, commit, repository)
     @file, @commit, @repository = file, commit, repository
@@ -52,35 +53,36 @@ private
   def self.compile
     log :compiling
 
-    perform_compilation!
-
-     if $?.to_i.zero?
-      log "compile run #1 successful"
-
-      perform_compilation!
-
-      if $?.to_i.zero?
-        log "compile run #2 successful"
-
-        @redis.sadd("#{document_name}:compiled_revisions", @sha)
-        @redis.set("#{document_name}:latest", @sha)
-        @redis.sadd("documents", document_name)
-        log :done
-      else
-        log :failed
-        puts $?.inspect
-      end
-     else
+    if perform_compilation!
+      @redis.sadd("#{document_name}:compiled_revisions", @sha)
+      @redis.set("#{document_name}:latest", @sha)
+      @redis.sadd("documents", document_name)
+      log :done
+    else
       log :failed
       puts $?.inspect
     end
   end
 
-  def self.perform_compilation!
-    time = Time.parse(@commit["timestamp"]).strftime("%B %e, %Y at %l:%M %p")
+  def self.perform_compilation!(run = 1)
+    if run <= MAX_RUNS
+      time = Time.parse(@commit["timestamp"]).strftime("%B %e, %Y at %l:%M %p")
 
-    `cd ./documents/#{document_name}/#{@sha}/;
+      output = `cd ./documents/#{document_name}/#{@sha}/;
     #{@config["latex"]["executable"]} "\\def\\sha{#{@sha[0...7]}} \\def\\commitDateTime{#{time}} \\input{#{@file}}"`
+
+      if $?.to_i.zero?
+        log "compile run ##{run} successful"
+        perform_compilation!(run + 1) if run < MAX_RUNS # if output.include? "Rerun"
+        true
+      else
+        log "compile run ##{run} failed"
+        false
+      end
+    else
+      log "max compile runs exceeded"
+      false
+    end
   end
 
   def self.log(message)
