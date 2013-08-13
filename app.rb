@@ -79,8 +79,14 @@ class Noteface < Sinatra::Base
       for document_name in document_names
         latest_sha = @redis.get("#{document_name}:latest")
         last_modified = @redis.get("#{latest_sha}:timestamp")
+        course_code = @redis.get("#{document_name}:course:code")
+        course_name = @redis.get("#{document_name}:course:name")
 
         documents[document_name] = {
+          :course => {
+            :code => course_code,
+            :name => course_name
+          },
           :sha => latest_sha,
           :timestamp => last_modified
         }

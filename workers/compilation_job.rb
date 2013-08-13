@@ -15,7 +15,7 @@ class CompilationJob
 
     @redis.set("#{@sha}:timestamp", @commit["timestamp"])
 
-    setup_workspace and fetch and compile
+    setup_workspace and fetch and find_metadata and compile
   end
 
 
@@ -48,6 +48,16 @@ private
         io.close
       end
     end
+  end
+
+  def self.find_metadata
+    # Let's Look for \title{...} line in the .tex file. So dirty.
+    log :metadata
+    full_title = `cat ./documents/#{document_name}/#{@sha}/#{@file} | grep "title{"`.strip.split('{').last.gsub(/\}/, '')
+    title_components = full_title.split(':')
+
+    @redis.set("#{document_name}:course:code", title_components.first)
+    @redis.set("#{document_name}:course:name", title_components.last)
   end
 
   def self.compile
