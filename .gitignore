@@ -3,3 +3,4 @@ tmp
 config/*.yml
 documents
 *.log
+dump.rdb
