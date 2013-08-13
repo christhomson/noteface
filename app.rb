@@ -73,15 +73,14 @@ class Noteface < Sinatra::Base
 
   get '/documents.json' do
     document_names = @redis.smembers('documents')
-    documents = []
+    documents = {}
 
     if document_names
       for document_name in document_names
         latest_sha = @redis.get("#{document_name}:latest")
         last_modified = @redis.get("#{latest_sha}:timestamp")
 
-        documents << {
-          :name => document_name,
+        documents[document_name] = {
           :sha => latest_sha,
           :timestamp => last_modified
         }
