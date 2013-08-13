@@ -56,8 +56,8 @@ private
     full_title = `cat ./documents/#{document_name}/#{@sha}/#{@file} | grep "title{"`.strip.split('{').last.gsub(/\}/, '')
     title_components = full_title.split(':')
 
-    @redis.set("#{document_name}:course:code", title_components.first)
-    @redis.set("#{document_name}:course:name", title_components.last)
+    @redis.set("#{document_name}:course:code", title_components.first.strip)
+    @redis.set("#{document_name}:course:name", title_components.last.strip)
   end
 
   def self.compile
