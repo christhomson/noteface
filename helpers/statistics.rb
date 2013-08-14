@@ -3,12 +3,15 @@ module Helpers
     def stats_for(document_name)
       stats = {
         :name => document_name,
+        :course => Hash.new,
         :downloads => 0,
         :users => Hash.new, # this will be overwritten
         :days => Hash.new(0),
         :hours => Hash.new(0)
       }
 
+      stats[:course][:code] = @redis.get("#{document_name}:course:code")
+      stats[:course][:name] = @redis.get("#{document_name}:course:name")
       stats[:downloads] = @redis.scard("#{document_name}:downloads")
 
       for download in @redis.smembers("#{document_name}:downloads")
@@ -19,12 +22,14 @@ module Helpers
         # Set default user object, if we haven't seen this user before.
         if !stats[:users][ip]
           stats[:users][ip] = {
+            :user_agents => [],
             :downloads => 0,
             :first_download => Time.now.to_i,
             :latest_download => 0
           }
         end
 
+        stats[:users][ip][:user_agents] << dl["user_agent"]
         stats[:users][ip][:downloads] = stats[:users][ip][:downloads] + 1
 
         if Time.at(stats[:users][ip][:first_download]) > time
@@ -39,6 +44,8 @@ module Helpers
         stats[:hours][time.hour] = stats[:hours][time.hour] + 1
 
       end
+
+      stats[:users].each_pair { |ip, u| u[:user_agents].uniq! }
 
       stats
     end
