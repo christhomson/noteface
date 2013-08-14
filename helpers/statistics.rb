@@ -4,11 +4,7 @@ module Helpers
       stats = {
         :name => document_name,
         :downloads => 0,
-        :users => Hash.new({
-          :downloads => 0,
-          :first_download => Time.now.to_i,
-          :latest_download => 0
-        }),
+        :users => Hash.new, # this will be overwritten
         :days => Hash.new(0),
         :hours => Hash.new(0)
       }
@@ -21,16 +17,22 @@ module Helpers
         ip = dl["ip"]
 
         # Set default user object, if we haven't seen this user before.
-        stats[:users][dl["ip"]] = stats[:users][dl["ip"]]
-
-        stats[:users][dl["ip"]][:downloads] = stats[:users][dl["ip"]][:downloads] + 1
-
-        if Time.at(stats[:users][dl["ip"]][:first_download]) > time
-          stats[:users][dl["ip"]][:first_download] = time
+        if !stats[:users][ip]
+          stats[:users][ip] = {
+            :downloads => 0,
+            :first_download => Time.now.to_i,
+            :latest_download => 0
+          }
         end
 
-        if Time.at(stats[:users][dl["ip"]][:latest_download]) < time
-          stats[:users][dl["ip"]][:latest_download] = time
+        stats[:users][ip][:downloads] = stats[:users][ip][:downloads] + 1
+
+        if Time.at(stats[:users][ip][:first_download]) > time
+          stats[:users][ip][:first_download] = time
+        end
+
+        if Time.at(stats[:users][ip][:latest_download]) < time
+          stats[:users][ip][:latest_download] = time
         end
 
         stats[:days][time.to_date.to_s] = stats[:days][time.to_date.to_s] + 1
