@@ -54,7 +54,7 @@ module Helpers
 
       for document in documents
         stats[:documents][document] = stats_for(document)
-        users << stats[:documents][document][:users]
+        users << stats[:documents][document][:users].keys
       end
 
       users.flatten!
