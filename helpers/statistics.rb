@@ -12,12 +12,24 @@ module Helpers
 
       stats[:course][:code] = @redis.get("#{document_name}:course:code")
       stats[:course][:name] = @redis.get("#{document_name}:course:name")
-      stats[:downloads] = @redis.scard("#{document_name}:downloads")
+      stats[:downloads] = {
+        :total => @redis.scard("#{document_name}:downloads"),
+        :today => 0,
+        :this_week => 0
+      }
 
       for download in @redis.smembers("#{document_name}:downloads")
         dl = JSON.parse(download)
         time = Time.at(dl["time"])
         ip = dl["ip"]
+
+        if time.to_date == Date.today
+          stats[:downloads][:today] = stats[:downloads][:today] + 1
+        end
+
+        if time.to_date > Date.today - 7
+          stats[:downloads][:this_week] = stats[:downloads][:this_week] + 1
+        end
 
         # Set default user object, if we haven't seen this user before.
         if !stats[:users][ip]

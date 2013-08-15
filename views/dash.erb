@@ -1,11 +1,9 @@
 <% @title = "Dashboard" %>
-<ul>
-<% for document_name, document in @documents %>
-  <li>
-    <h2><%= document[:name] %></h2>
-    <%= document[:users].count %> unique people
-  </li>
+<canvas id="downloads-by-document" width="400" height="400"></canvas>
 
-  <canvas id="downloads-by-document" width="400" height="400"></canvas>
-<% end %>
+<ul id="documents">
+  <li class="template">
+    <span class="document-name"></span> received <span class="total-downloads"></span> downloads in total.
+    <span class="downloads-today"></span> of those downloads occurred today, and <span class="downloads-week"></span> in total over the past week.
+  </li>
 </ul>

@@ -107,10 +107,6 @@ class Noteface < Sinatra::Base
   get '/dash' do
     protected!
 
-    stats = all_stats
-    @documents = stats[:documents]
-    @users_count = stats[:users_count]
-
     erb :dash
   end
 end
