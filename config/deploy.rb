@@ -60,4 +60,9 @@ namespace :vlad do
     "vlad:resque:restart",
     "vlad:cleanup"
   ]
+
+  task :start => [
+    "vlad:thin:restart",
+    "vlad:resque:restart"
+  ]
 end
