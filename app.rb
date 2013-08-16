@@ -14,27 +14,34 @@ class Noteface < Sinatra::Base
   helpers Sinatra::JSON
   helpers Helpers::Authentication
   helpers Helpers::Statistics
+
   helpers do
-
     def serve_pdf(document_name, sha)
+      error_info = {}
+
       if sha
-        user_info = {
-          :ip => request.ip,
-          :user_agent => request.user_agent,
-          :time => Time.now.to_i
-        }
-        @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
-        user_info[:sha] = sha
-        @redis.sadd "#{document_name}:downloads", user_info.to_json
+        unless authorized?
+          user_info = {
+            :ip => request.ip,
+            :user_agent => request.user_agent,
+            :time => Time.now.to_i
+          }
+          @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
+          user_info[:sha] = sha
+          @redis.sadd "#{document_name}:downloads", user_info.to_json
+        end
 
-        headers \
-          'Content-Type' => 'application/pdf',
-          'Etag' => sha
+        file_path = "./documents/#{document_name}/#{sha}/#{document_name}.pdf"
 
-        File.read("./documents/#{document_name}/#{sha}/#{document_name}.pdf")
-      else
-        404
+        if File.exists?(file_path)
+          headers \
+            'Content-Type' => 'application/pdf',
+            'Etag' => sha
+          return File.read(path)
+        end
       end
+
+      404
     end
   end
 
