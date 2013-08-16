@@ -37,7 +37,7 @@ class Noteface < Sinatra::Base
           headers \
             'Content-Type' => 'application/pdf',
             'Etag' => sha
-          return File.read(path)
+          return File.read(file_path)
         end
       end
 
