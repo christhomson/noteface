@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  var colors;
+
   var randLT = function(n) {
     return Math.round(Math.random() * n);
   };
@@ -24,7 +26,7 @@ $(document).ready(function() {
 
       chartData.push({
         value: documents[doc].downloads.total,
-        color: randomColor()
+        color: colors[doc]
       });
     }
 
@@ -38,18 +40,21 @@ $(document).ready(function() {
       doc = documents[doc_name];
 
       $li = $('li.template').clone().removeClass('template');
-      $li.find('.document-name').text(doc.name);
+      $li.find('.document-name').text(doc.course.code);
       $li.find('.total-downloads').text(doc.downloads.total);
       $li.find('.downloads-today').text(doc.downloads.today);
       $li.find('.downloads-week').text(doc.downloads.this_week);
+      $li.find('.users-count').text(Object.keys(doc.users).length);
+      $li.find("h2").css({color: colors[doc_name]});
       $('ul#documents').append($li);
     }
   };
 
   var renderStats = function(data) {
-    renderDownloadsPieChart(data.documents);
     colors = chooseColors(data.documents);
+    renderDownloadsPieChart(data.documents);
     renderDownloadCounts(data.documents);
+
     // TODO: display a time-view of downloads, on a per-document basis.
   };
 
