@@ -1,22 +1,22 @@
 $(document).ready(function() {
-  var colors;
+  var colors = {};
 
   var randLT = function(n) {
     return Math.round(Math.random() * n);
   };
 
   var randomColor = function() {
-    return "rgb(" + randLT(255) + ", " + randLT(255) + ", " + randLT(255) + ")";
+    return { r: randLT(255), g: randLT(255), b: randLT(255) };
   };
 
-  var chooseColors = function(documents) {
-    var _colors = {};
+  var getColor = function(id, rgba) {
+    if (typeof rgba === 'undefined') { rgba = 1; }
 
-    for (doc in documents) {
-      _colors[doc] = randomColor();
+    if (!colors[id]) {
+      colors[id] = randomColor();
     }
 
-    return _colors;
+    return "rgba(" + colors[id].r + ", " + colors[id].g + ", " + colors[id].b + ", " + rgba + ")";
   };
 
   var renderDownloadsPieChart = function(documents) {
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
       chartData.push({
         value: documents[doc].downloads.total,
-        color: colors[doc]
+        color: getColor(doc)
       });
     }
 
@@ -45,13 +45,12 @@ $(document).ready(function() {
       $li.find('.downloads-today').text(doc.downloads.today);
       $li.find('.downloads-week').text(doc.downloads.this_week);
       $li.find('.users-count').text(Object.keys(doc.users).length);
-      $li.find("h2").css({color: colors[doc_name]});
+      $li.find("h2").css({color: getColor(doc_name)});
       $('ul#documents').append($li);
     }
   };
 
   var renderStats = function(data) {
-    colors = chooseColors(data.documents);
     renderDownloadsPieChart(data.documents);
     renderDownloadCounts(data.documents);
 
