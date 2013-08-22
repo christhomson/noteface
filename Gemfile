@@ -7,6 +7,7 @@ gem 'redis'
 gem 'json'
 gem 'resque'
 gem 'rake'
+gem 'mixpanel-ruby'
 
 group :development do
   gem 'pry'

@@ -3,17 +3,23 @@ require 'erb'
 require './workers/compilation_job'
 require './helpers/authentication'
 require './helpers/statistics'
+require './helpers/mixpanel'
 
 class Noteface < Sinatra::Base
   before do
     @config ||= YAML.load_file('config/settings.yml')
     @redis ||= Redis.new # assume localhost:6379
     Resque.redis = @redis
+
+    if @config['mixpanel'] && @config['mixpanel']['token']
+      @mixpanel_tracker = Mixpanel::Tracker.new(@config['mixpanel']['token'])
+    end
   end
 
   helpers Sinatra::JSON
   helpers Helpers::Authentication
   helpers Helpers::Statistics
+  helpers Helpers::Mixpanel
 
   helpers do
     def serve_pdf(document_name, sha)
@@ -28,6 +34,7 @@ class Noteface < Sinatra::Base
           }
           @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
           user_info[:sha] = sha
+          track_event user_info, 'Downloaded File', { document: document_name, sha: sha }
           @redis.sadd "#{document_name}:downloads", user_info.to_json
         end
 

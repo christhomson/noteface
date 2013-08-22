@@ -7,3 +7,6 @@ latex:
 
 github:
   post_receive_secret: omnomnom
+
+mixpanel:
+  token: XXXX
