@@ -6,10 +6,18 @@ require './helpers/authentication'
 require './helpers/statistics'
 
 class Noteface < Sinatra::Base
+  enable :sessions
+
+  configure do
+    @config ||= YAML.load_file('config/settings.yml')
+    set :session_secret, @config['session_secret']
+  end
+
   before do
     @config ||= YAML.load_file('config/settings.yml')
     @redis ||= Redis.new # assume localhost:6379
     Resque.redis = @redis
+    session[:user_id] ||= Digest::SHA1.hexdigest((rand + Time.now.to_i).to_s)
   end
 
   helpers Sinatra::JSON
@@ -31,8 +39,14 @@ class Noteface < Sinatra::Base
           user_info[:sha] = sha
           @redis.sadd "#{document_name}:downloads", user_info.to_json
 
-          mixpanel_properties = {:ip_address => request.ip, :user_agent => request.user_agent, :document => document_name, :sha => sha }
-          Resque.enqueue(MixpanelTrackingEvent, user_info, 'Downloaded File', mixpanel_properties)
+          mixpanel_properties = {
+            :ip_address => request.ip,
+            :user_agent => request.user_agent,
+            :document => document_name,
+            :sha => sha
+          }
+
+          Resque.enqueue(MixpanelTrackingEvent, session[:user_id], user_info, 'Downloaded File', mixpanel_properties)
         end
 
         file_path = "./documents/#{document_name}/#{sha}/#{document_name}.pdf"
