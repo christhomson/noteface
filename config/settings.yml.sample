@@ -10,3 +10,5 @@ github:
 
 mixpanel:
   token: XXXX
+
+session_secret: XXXX
