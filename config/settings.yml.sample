@@ -12,3 +12,6 @@ mixpanel:
   token: XXXX
 
 session_secret: XXXX
+
+redirects:
+  error: http://cthomson.ca/notes

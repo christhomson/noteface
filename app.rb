@@ -134,4 +134,12 @@ class Noteface < Sinatra::Base
 
     erb :dash
   end
+
+  not_found do
+    redirect @config['redirects']['error']
+  end
+
+  error do
+    redirect @config['redirects']['error']
+  end
 end
