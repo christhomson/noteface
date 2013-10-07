@@ -107,10 +107,14 @@ class Noteface < Sinatra::Base
         course_code = @redis.get("#{document_name}:course:code")
         course_name = @redis.get("#{document_name}:course:name")
 
+        # Not currently extracted from LaTeX files automatically:
+        course_term = @redis.get("#{document_name}:course:term")
+
         documents[document_name] = {
           :course => {
             :code => course_code,
-            :name => course_name
+            :name => course_name,
+            :term => course_term
           },
           :sha => latest_sha,
           :timestamp => last_modified
