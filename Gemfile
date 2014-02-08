@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.1.0'
 
 gem 'thin'
 gem 'sinatra'
@@ -10,6 +11,7 @@ gem 'rake'
 gem 'mixpanel-ruby'
 
 group :development do
+  gem 'shotgun'
   gem 'pry'
   gem 'vlad', :require => false
   gem 'vlad-git', :require => false
