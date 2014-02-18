@@ -33,8 +33,7 @@ class Noteface < Sinatra::Base
           user_info = {
             :ip => request.ip,
             :user_agent => request.user_agent,
-            :time => Time.now.to_i,
-            :referrer => request.referer
+            :time => Time.now.to_i
           }
           @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
           user_info[:sha] = sha
@@ -44,7 +43,8 @@ class Noteface < Sinatra::Base
             :ip_address => request.ip,
             :user_agent => request.user_agent,
             :document => document_name,
-            :sha => sha
+            :sha => sha,
+            :referred_by => request.referer
           }
 
           Resque.enqueue(MixpanelTrackingEvent, session[:user_id], user_info, 'Downloaded File', mixpanel_properties)
