@@ -33,7 +33,8 @@ class Noteface < Sinatra::Base
           user_info = {
             :ip => request.ip,
             :user_agent => request.user_agent,
-            :time => Time.now.to_i
+            :time => Time.now.to_i,
+            :referrer => request.referer
           }
           @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
           user_info[:sha] = sha
