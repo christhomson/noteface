@@ -10,7 +10,7 @@ module Helpers
       user = @config["auth"]["username"]
       pass = @config["auth"]["password"]
       @auth ||= Rack::Auth::Basic::Request.new(request.env)
-      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [user, pass]
+      @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [user, pass]
     end
   end
 end

@@ -17,7 +17,7 @@ class Noteface < Sinatra::Base
     @config ||= YAML.load_file('config/settings.yml')
     @redis ||= Redis.new # assume localhost:6379
     Resque.redis = @redis
-    session[:user_id] ||= Digest::SHA1.hexdigest((rand + Time.now.to_i).to_s)
+    session[:user_id] ||= SecureRandom.hex
   end
 
   helpers Sinatra::JSON
@@ -31,20 +31,20 @@ class Noteface < Sinatra::Base
       if sha
         unless authorized?
           user_info = {
-            :ip => request.ip,
-            :user_agent => request.user_agent,
-            :time => Time.now.to_i
+            ip: request.ip,
+            user_agent: request.user_agent,
+            time: Time.now.to_i
           }
           @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
           user_info[:sha] = sha
           @redis.sadd "#{document_name}:downloads", user_info.to_json
 
           mixpanel_properties = {
-            :ip_address => request.ip,
-            :user_agent => request.user_agent,
-            :document => document_name,
-            :sha => sha,
-            :referred_by => request.referer
+            ip_address: request.ip,
+            user_agent: request.user_agent,
+            document: document_name,
+            sha: sha,
+            referred_by: request.referer
           }
 
           Resque.enqueue(MixpanelTrackingEvent, session[:user_id], user_info, 'Downloaded File', mixpanel_properties)
@@ -55,7 +55,7 @@ class Noteface < Sinatra::Base
         if File.exists?(file_path)
           headers \
             'Content-Type' => 'application/pdf',
-            'Etag' => sha
+            'Etag'         => sha
           return File.read(file_path)
         end
       end
@@ -70,7 +70,7 @@ class Noteface < Sinatra::Base
     halt 304 if payload["ref"] != "refs/heads/master" # only build on master
 
     files_to_compile = []
-    for commit in payload["commits"]
+    payload["commits"].each do |commit|
       files_to_compile << [commit["added"], commit["modified"]]
     end
 
@@ -78,7 +78,7 @@ class Noteface < Sinatra::Base
     files_to_compile.uniq!
     files_to_compile.select! { |f| f[-4..-1] == ".tex" }
 
-    for file in files_to_compile
+    files_to_compile.each do |file|
       puts "Queuing #{file}@#{payload["after"]} for compilation."
       Resque.enqueue(CompilationJob, file, payload["head_commit"], payload["repository"])
     end
@@ -102,7 +102,7 @@ class Noteface < Sinatra::Base
     documents = {}
 
     if document_names
-      for document_name in document_names
+      document_names.each do |document_name| 
         latest_sha = @redis.get("#{document_name}:latest")
         last_modified = @redis.get("#{latest_sha}:timestamp")
         course_code = @redis.get("#{document_name}:course:code")
@@ -112,13 +112,13 @@ class Noteface < Sinatra::Base
         course_term = @redis.get("#{document_name}:course:term")
 
         documents[document_name] = {
-          :course => {
-            :code => course_code,
-            :name => course_name,
-            :term => course_term
+          course: {
+            code: course_code,
+            name: course_name,
+            term: course_term
           },
-          :sha => latest_sha,
-          :timestamp => last_modified
+          sha: latest_sha,
+          timestamp: last_modified
         }
       end
     end

@@ -2,23 +2,23 @@ module Helpers
   module Statistics
     def stats_for(document_name)
       stats = {
-        :name => document_name,
-        :course => Hash.new,
-        :downloads => 0,
-        :users => Hash.new, # this will be overwritten
-        :days => Hash.new(0),
-        :hours => Hash.new(0)
+        name: document_name,
+        course: Hash.new,
+        downloads: 0,
+        users: Hash.new, # this will be overwritten
+        days: Hash.new(0),
+        hours: Hash.new(0)
       }
 
       stats[:course][:code] = @redis.get("#{document_name}:course:code")
       stats[:course][:name] = @redis.get("#{document_name}:course:name")
       stats[:downloads] = {
-        :total => @redis.scard("#{document_name}:downloads"),
-        :today => 0,
-        :this_week => 0
+        total: @redis.scard("#{document_name}:downloads"),
+        today: 0,
+        this_week: 0
       }
 
-      for download in @redis.smembers("#{document_name}:downloads")
+      @redis.smembers("#{document_name}:downloads").each do |download|
         dl = JSON.parse(download)
         time = Time.at(dl["time"])
         ip = dl["ip"]
@@ -32,12 +32,12 @@ module Helpers
         end
 
         # Set default user object, if we haven't seen this user before.
-        if !stats[:users][ip]
+        unless stats[:users][ip]
           stats[:users][ip] = {
-            :user_agents => [],
-            :downloads => 0,
-            :first_download => Time.now.to_i,
-            :latest_download => 0
+            user_agents: [],
+            downloads: 0,
+            first_download: Time.now.to_i,
+            latest_download: 0
           }
         end
 
@@ -65,13 +65,13 @@ module Helpers
     def all_stats
       documents = @redis.smembers('documents')
       stats = {
-        :documents => {},
-        :users_count => 0
+        documents: {},
+        users_count: 0
       }
 
       users = []
 
-      for document in documents
+      documents.each do |document|
         stats[:documents][document] = stats_for(document)
         users << stats[:documents][document][:users].keys
       end
@@ -83,6 +83,5 @@ module Helpers
 
       stats
     end
-
   end
 end

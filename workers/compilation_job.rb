@@ -15,7 +15,10 @@ class CompilationJob
 
     @redis.set("#{@sha}:timestamp", @commit["timestamp"])
 
-    setup_workspace and fetch and find_metadata and compile
+    setup_workspace
+    fetch
+    find_metadata
+    compile
   end
 
 

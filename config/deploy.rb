@@ -15,40 +15,40 @@ shared_paths.merge!({"documents" => "documents"})
 
 namespace :vlad do
   namespace :thin do
-    remote_task :start, :roles => :app do
+    remote_task :start, roles: :app do
       puts "Starting Thin..."
       sudo "start thin"
     end
 
-    remote_task :stop, :roles => :app do
+    remote_task :stop, roles: :app do
       puts "Attempting to stop Thin..."
       sudo "stop thin"
     end
 
-    remote_task :restart, :roles => :app do
+    remote_task :restart, roles: :app do
       puts "Restarting Thin..."
       sudo "restart thin"
     end
   end
 
   namespace :resque do
-    remote_task :start, :roles => :app do
+    remote_task :start, roles: :app do
       puts "Starting Resque worker..."
       sudo "start resque"
     end
 
-    remote_task :stop, :roles => :app do
+    remote_task :stop, roles: :app do
       puts "Attempting to stop Resque worker..."
       sudo "stop resque"
     end
 
-    remote_task :restart, :roles => :app do
+    remote_task :restart, roles: :app do
       puts "Restarting Resque worker..."
       sudo "restart resque"
     end
   end
 
-  remote_task :symlink_config, :roles => :app do
+  remote_task :symlink_config, roles: :app do
     run "touch #{shared_path}/settings.yml; ln -s #{shared_path}/settings.yml #{release_path}/config/settings.yml"
   end
 
