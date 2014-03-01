@@ -3,7 +3,6 @@ require 'erb'
 require './workers/compilation_job'
 require './workers/mixpanel_tracking_event'
 require './helpers/authentication'
-require './helpers/statistics'
 
 class Noteface < Sinatra::Base
   enable :sessions
@@ -22,22 +21,17 @@ class Noteface < Sinatra::Base
 
   helpers Sinatra::JSON
   helpers Helpers::Authentication
-  helpers Helpers::Statistics
 
   helpers do
     def serve_pdf(document_name, sha)
-      error_info = {}
-
       if sha
         unless authorized?
           user_info = {
             ip: request.ip,
             user_agent: request.user_agent,
-            time: Time.now.to_i
+            time: Time.now.to_i,
+            sha: sha
           }
-          @redis.sadd "#{document_name}:#{sha}:downloads", user_info.to_json
-          user_info[:sha] = sha
-          @redis.sadd "#{document_name}:downloads", user_info.to_json
 
           mixpanel_properties = {
             ip_address: request.ip,
