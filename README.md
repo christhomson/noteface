@@ -1,4 +1,7 @@
 # Noteface
+[![Dependency Status on Gemnasium](https://gemnasium.com/christhomson/noteface.png)](https://gemnasium.com/christhomson/noteface)
+[![Code Climate](https://codeclimate.com/github/christhomson/noteface.png)](https://codeclimate.com/github/christhomson/noteface)
+
 Noteface is a Sinatra application for managing the compilation and distribution of LaTeX documents that are updated in a Git repository (on GitHub) frequently.
 
 Noteface compiles a PDF every time a change in a .tex file is committed to a particular repository of GitHub. It then allows others to download those PDFs, and it tracks downloads.
