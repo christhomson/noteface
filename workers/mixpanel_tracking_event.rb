@@ -2,7 +2,7 @@ require 'mixpanel-ruby'
 require 'yaml'
 
 class MixpanelTrackingEvent
-  @queue = :mixpanel
+  @queue = :noteface
 
   def self.perform(id, user, event, params)
     @config = YAML.load_file("config/settings.yml")

@@ -11,40 +11,40 @@ set :revision, "HEAD"
 shared_paths.merge!({"documents" => "documents"})
 
 # On the server side, the upstart scripts (config/upstart) should be installed to /etc/init.
-# We also need to allow the "[start|stop|restart] [thin|resque]" commands with no password for this user.
+# We also need to allow the "[start|stop|restart] [noteface_thin|noteface_resque]" commands with no password for this user.
 
 namespace :vlad do
   namespace :thin do
     remote_task :start, roles: :app do
       puts "Starting Thin..."
-      sudo "start thin"
+      sudo "start noteface_thin"
     end
 
     remote_task :stop, roles: :app do
       puts "Attempting to stop Thin..."
-      sudo "stop thin"
+      sudo "stop noteface_thin"
     end
 
     remote_task :restart, roles: :app do
       puts "Restarting Thin..."
-      sudo "restart thin"
+      sudo "restart noteface_thin"
     end
   end
 
   namespace :resque do
     remote_task :start, roles: :app do
       puts "Starting Resque worker..."
-      sudo "start resque"
+      sudo "start noteface_resque"
     end
 
     remote_task :stop, roles: :app do
       puts "Attempting to stop Resque worker..."
-      sudo "stop resque"
+      sudo "stop noteface_resque"
     end
 
     remote_task :restart, roles: :app do
       puts "Restarting Resque worker..."
-      sudo "restart resque"
+      sudo "restart noteface_resque"
     end
   end
 
