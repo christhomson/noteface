@@ -3,7 +3,7 @@ require 'time'
 require 'yaml'
 
 class CompilationJob
-  @queue = :latex
+  @queue = :noteface
   @redis = Redis.new
   MAX_RUNS = 3
 
