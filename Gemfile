@@ -8,7 +8,7 @@ gem 'redis', '~> 3.0.7'
 gem 'json', '~> 1.8.1'
 gem 'resque', '~> 1.25.1'
 gem 'rake', '~> 10.1.1'
-gem 'mixpanel-ruby', '~> 1.2.0'
+gem 'mixpanel-ruby', '~> 1.3.0'
 
 group :development do
   gem 'shotgun'
