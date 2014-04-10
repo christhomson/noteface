@@ -14,7 +14,7 @@ Noteface compiles a PDF every time a change in a .tex file is committed to a par
 5. `bundle install`
 6. `cp config/settings.yml.sample config/settings.yml`
 7. Place all your secrets in `config/settings.yml`.
-8. `shotgun`
+8. `bundle exec shotgun`
 
 ## Use case
 I have a public repository of my [lecture notes](http://github.com/christhomson/lecture-notes), and it contained the .tex source files and the corresponding compiled .pdf files.
