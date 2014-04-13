@@ -16,3 +16,7 @@ group :development do
   gem 'vlad', require: false
   gem 'vlad-git', require: false
 end
+
+group :test do
+  gem 'rack-test', require: 'rack/test'
+end
