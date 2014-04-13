@@ -1,0 +1,10 @@
+language: ruby
+cache: bundler
+before_script:
+  - cp config/settings.yml.sample config/settings.yml
+rvm:
+  - 2.1.0
+services:
+  - redis-server
+notifications:
+  email: false

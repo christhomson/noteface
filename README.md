@@ -16,6 +16,9 @@ Noteface compiles a PDF every time a change in a .tex file is committed to a par
 7. Place all your secrets in `config/settings.yml`.
 8. `shotgun`
 
+## Tests
+You can run the tests with `bundle exec rake test`.
+
 ## Use case
 I have a public repository of my [lecture notes](http://github.com/christhomson/lecture-notes), and it contained the .tex source files and the corresponding compiled .pdf files.
 
