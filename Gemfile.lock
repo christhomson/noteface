@@ -20,7 +20,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rake (10.2.2)
+    rake (10.3.1)
     rake-remote_task (2.2.1)
       open4 (~> 1.0)
       rake (>= 0.8, < 11.0)
@@ -68,7 +68,7 @@ DEPENDENCIES
   mixpanel-ruby (~> 1.4.0)
   pry
   rack-test
-  rake (~> 10.2.2)
+  rake (~> 10.3.1)
   redis (~> 3.0.7)
   resque (~> 1.25.1)
   shotgun

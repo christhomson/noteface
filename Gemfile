@@ -7,7 +7,7 @@ gem 'sinatra-contrib', '~> 1.4.2', require: 'sinatra/json'
 gem 'redis', '~> 3.0.7'
 gem 'json', '~> 1.8.1'
 gem 'resque', '~> 1.25.1'
-gem 'rake', '~> 10.2.2'
+gem 'rake', '~> 10.3.1'
 gem 'mixpanel-ruby', '~> 1.4.0'
 
 group :development do
