@@ -108,6 +108,6 @@ private
 
   # TODO - for now we assume this job has a SHA that represents the current HEAD of master.
   def self.uri
-    @uri ||= URI("https://raw.github.com/#{@repository['owner']['name']}/#{@repository['name']}/master/#{@file}")
+    @uri ||= URI("https://raw.githubusercontent.com/#{@repository['owner']['name']}/#{@repository['name']}/master/#{@file}")
   end
 end
